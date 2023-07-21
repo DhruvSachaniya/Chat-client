@@ -1,75 +1,80 @@
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Link } from "react-router-dom";
 
-export default function About () {
-    const [inputText, setInputText] = useState("");
-    const [inputEmail, setInputEmail] = useState("");
-    const [inputPassword, setInputPassword] = useState("");
-    const [responsemess, setresponsemess] = useState("");
+export default function Register() {
+  const [cradentials, setCradentials] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-    function handleinput (event) {
-        const {name, value} = event.target;
-        if(name === "username") {
-            setInputText(value);
-        } else if (name === "email") {
-            setInputEmail(value);
-        } else if (name === "password") {
-            setInputPassword(value);
-        }
+    setCradentials((prevValue) => {
+      return {
+        ...prevValue,
+        [name]: value,
+      };
+    });
+  }
+
+  async function handleRegister(event) {
+    event.preventDefault();
+    try {
+      await axios({
+        url: "/auth/register",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          username: cradentials.username,
+          email: cradentials.email,
+          password: cradentials.password,
+        }),
+      });
+      setCradentials({
+        username: "",
+        email: "",
+        password: "",
+      });
+    } catch (err) {
+      console.log("error");
     }
+  }
 
-    async function sendingdata(username, email, password) {
-        console.log("clicked");
-        try {
-          const response = await axios.post("http://localhost:5000/auth/register", {
-            username: username,
-            email: email,
-            password: password,
-          });
-          setresponsemess(JSON.stringify(response.data));
-        } catch (error) {
-          console.error("Error sending data:", error);
-        }
-      }
-
-    return(
-        <div>
-            <h1>this is register page</h1>
-            <div>
-                <input
-                name="username"
-                placeholder="username"
-                onChange={handleinput}
-                type="text"
-                value={inputText}
-                />
-                <input
-                name="email"
-                placeholder="email"
-                onChange={handleinput} 
-                type="email" 
-                value={inputEmail}    
-                />
-                <input
-                name="password"
-                placeholder="password"
-                onChange={handleinput} 
-                type="password"
-                value={inputPassword}
-                />
-                <button onClick={() => sendingdata(inputText, inputEmail, inputPassword)} type="submit">
-                    submit
-                </button>
-                <p>If already registered? <Link to="/login">Login here</Link></p>
-                {responsemess && (
-                    <div>
-                        <p>{responsemess}</p><Link to="/login">Go to login page</Link>
-                    </div>
-                )}
-
-            </div>
-        </div>
-    );
+  return (
+    <>
+      <h1>register page</h1>
+      <form onSubmit={handleRegister}>
+        <input
+          name="username"
+          placeholder="username"
+          onChange={handleChange}
+          type="text"
+          value={cradentials.username}
+        />
+        <input
+          name="email"
+          placeholder="email"
+          onChange={handleChange}
+          type="email"
+          value={cradentials.email}
+        />
+        <input
+          name="password"
+          placeholder="password"
+          onChange={handleChange}
+          type="password"
+          value={cradentials.password}
+        />
+        <button type="submit">Register</button>
+      </form>
+      <p>
+        If already registered? <Link to="/login">Login here</Link>
+      </p>
+    </>
+  );
 }
