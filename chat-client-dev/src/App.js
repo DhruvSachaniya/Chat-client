@@ -1,17 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import About from "./componets/Register";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Register from "./componets/Register";
 import Login from "./componets/Login";
+
+function RegisterOrLogin() {
+  return (
+    <>
+      <Link to="/register">Register</Link>
+      <br />
+      <Link to="/login">Login</Link>
+    </>
+  );
+};
 
 function App() {
   return (
     <>
-    <BrowserRouter>
+      <BrowserRouter>
         <Routes>
-          <Route path="/register" element={<About/>}/>
-          <Route path="/login" element={<Login/>}/>
+          <Route path="/" element={<RegisterOrLogin />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
-    </BrowserRouter>
-      <h1>hello</h1>
+      </BrowserRouter>
     </>
   );
 }
