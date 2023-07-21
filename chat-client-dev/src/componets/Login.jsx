@@ -2,54 +2,65 @@ import axios from "axios";
 import { useState } from "react";
 
 export default function Login() {
-    const [inputname, setinputname] = useState("");
-    const [inputpass, setinputpass] = useState("");
-    const [responsemess, setresponsemess] = useState("");
-    
-    function handleinput (event) {
-        const {name, value} = event.target;
-        if(name === "username") {
-            setinputname(value);
-        } else if (name === "password") {
-            setinputpass(value);
-        }
+  const [cradentials, setCradentials] = useState({
+    username: "",
+    password: "",
+  });
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setCradentials((prevValue) => {
+      return {
+        ...prevValue,
+        [name]: value,
+      };
+    });
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    try {
+      const response = await axios({
+        url: "/auth/login",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(cradentials),
+      });
+
+      if (response.status === 200) {
+        localStorage.setItem("jwt_token", response.data.token);
+      }
+      setCradentials({
+        username: "",
+        password: "",
+      });
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-    async function logindata(username, password) {
-        try{
-            const response = await axios.post("http://localhost:5000/auth/login", {
-                username: username,
-                password: password
-            });
-            setresponsemess(JSON.stringify(response.data));
-            
-        } catch (error) {
-            console.log("error sending data", error)
-        }
-    }
-
-
-    return(
-        <>
-            <h1>this is login page</h1>
-            <div>
-                <input
-                name="username"
-                placeholder="username" 
-                onChange={handleinput}
-                value={inputname}
-                type="text"/>
-                <input 
-                name="password"
-                placeholder="password"
-                onChange={handleinput}
-                value={inputpass}
-                type="password"/>
-                <button onClick={()=> logindata(inputname, inputpass)}>
-                    login
-                </button>
-                {responsemess && <p>{responsemess}</p>}
-            </div>
-        </>
-    );
+  return (
+    <>
+      <h1>login page</h1>
+      <form onSubmit={handleLogin}>
+        <input
+          name="username"
+          placeholder="username"
+          onChange={handleChange}
+          value={cradentials.username}
+          type="text"
+        />
+        <input
+          name="password"
+          placeholder="password"
+          onChange={handleChange}
+          value={cradentials.password}
+          type="password"
+        />
+        <button type="submit">Login</button>
+      </form>
+    </>
+  );
 }

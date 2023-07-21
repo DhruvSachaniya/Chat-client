@@ -20,7 +20,8 @@ export default function Register() {
     });
   }
 
-  async function handleRegister() {
+  async function handleRegister(event) {
+    event.preventDefault();
     try {
       await axios({
         url: "/auth/register",
