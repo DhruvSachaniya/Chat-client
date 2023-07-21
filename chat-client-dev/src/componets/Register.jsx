@@ -1,21 +1,23 @@
 import { useState } from "react";
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
 export default function About () {
     const [inputText, setInputText] = useState("");
     const [inputEmail, setInputEmail] = useState("");
     const [inputPassword, setInputPassword] = useState("");
+    const [responsemess, setresponsemess] = useState("");
 
-    function handleinput(event) {
-        setInputText(event.target.value);
-    }
 
-    function handleemail(event) {
-        setInputEmail(event.target.value);
-    }
-
-    function handlepassword(event) {
-        setInputPassword(event.target.value);
+    function handleinput (event) {
+        const {name, value} = event.target;
+        if(name === "username") {
+            setInputText(value);
+        } else if (name === "email") {
+            setInputEmail(value);
+        } else if (name === "password") {
+            setInputPassword(value);
+        }
     }
 
     async function sendingdata(username, email, password) {
@@ -26,7 +28,7 @@ export default function About () {
             email: email,
             password: password,
           });
-          console.log(response.data);
+          setresponsemess(JSON.stringify(response.data));
         } catch (error) {
           console.error("Error sending data:", error);
         }
@@ -37,23 +39,36 @@ export default function About () {
             <h1>this is register page</h1>
             <div>
                 <input
+                name="username"
+                placeholder="username"
                 onChange={handleinput}
                 type="text"
                 value={inputText}
                 />
                 <input
-                onChange={handleemail} 
+                name="email"
+                placeholder="email"
+                onChange={handleinput} 
                 type="email" 
                 value={inputEmail}    
                 />
                 <input
-                onChange={handlepassword} 
+                name="password"
+                placeholder="password"
+                onChange={handleinput} 
                 type="password"
                 value={inputPassword}
                 />
                 <button onClick={() => sendingdata(inputText, inputEmail, inputPassword)} type="submit">
                     submit
                 </button>
+                <p>If already registered? <Link to="/login">Login here</Link></p>
+                {responsemess && (
+                    <div>
+                        <p>{responsemess}</p><Link to="/login">Go to login page</Link>
+                    </div>
+                )}
+
             </div>
         </div>
     );
