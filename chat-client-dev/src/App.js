@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./componets/Register";
 import Login from "./componets/Login";
-import CreateServer from "./componets/CreateServer";
-import CreateChannel from "./componets/CreateChannel";
+import Server from "./componets/Server";
+import Channel from "./componets/Channel";
 
 function RegisterOrLogin() {
   return (
@@ -11,9 +11,9 @@ function RegisterOrLogin() {
       <br />
       <Link to="/login">Login</Link>
       <br />
-      <Link to="/create-server">server</Link>
+      <Link to="/servers">server</Link>
       <br />
-      <Link to="/create-channel">channels</Link>
+      <Link to="/channels">channels</Link>
     </>
   );
 };
@@ -26,8 +26,8 @@ function App() {
           <Route path="/" element={<RegisterOrLogin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/create-server" element={<CreateServer/>}/>
-          <Route path="/create-channel" element={<CreateChannel/>}/>
+          <Route path="/servers" element={<Server/>}/>
+          <Route path="/channels" element={<Channel/>}/>
         </Routes>
       </BrowserRouter>
     </>
