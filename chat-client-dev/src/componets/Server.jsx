@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Server() {
   const [serverName, setServerName] = useState("");
@@ -56,21 +56,23 @@ export default function Server() {
   return (
     <>
       <div>
-        {servers.map((server) => {
-          return (
-            <div
-              key={server._id}
-              onClick={() => {
-                seeChannels(server._id);
-              }}
-            >
-              <h1>{server.serverName}</h1>
-            </div>
-          );
-        })}
+        {servers.length > 0
+          ? servers.map((server) => {
+              return (
+                <div
+                  key={server._id}
+                  onClick={() => {
+                    seeChannels(server._id);
+                  }}
+                >
+                  <h1>{server.serverName}</h1>
+                </div>
+              );
+            })
+          : null}
       </div>
       <hr />
-      <h1>create-server page</h1>
+      <h1>create-server</h1>
       <form onSubmit={handleSubmit}>
         <input
           onChange={handleChange}
