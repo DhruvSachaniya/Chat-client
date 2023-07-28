@@ -6,8 +6,7 @@ export default function Server() {
   const [serverName, setServerName] = useState("");
   const [servers, setServers] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
+  function fetchServers() {
     axios({
       url: "/users/servers",
       method: "get",
@@ -22,6 +21,9 @@ export default function Server() {
       .catch((err) => {
         console.log(err);
       });
+  }
+  useEffect(() => {
+    fetchServers();
   }, []);
 
   function handleChange(event) {
@@ -43,6 +45,7 @@ export default function Server() {
         }),
       });
       setServerName("");
+      fetchServers();
     } catch (error) {
       console.log("error");
     }

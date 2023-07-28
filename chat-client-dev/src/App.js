@@ -13,7 +13,7 @@ function RegisterOrLogin() {
       <br />
       <Link to="/servers">server</Link>
       <br />
-      <Link to="/channels">channels</Link>
+      {/* <Link to="/channels">channels</Link> */}
     </>
   );
 };
