@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateChannel() {
   const [channelName, setChannelName] = useState("");
   const [channels, setChannels] = useState([]);
+
+  const navigate = useNavigate();
 
   function fetchChannels() {
     axios({
@@ -56,13 +59,23 @@ export default function CreateChannel() {
     }
   }
 
+  function seeChat(channelId) {
+    localStorage.setItem("channelId", channelId);
+    navigate("/chat");
+  }
+
   return (
     <>
       <hr />
       {channels.length > 0
         ? channels.map((channel) => {
             return (
-              <div key={channel._id}>
+              <div
+                key={channel._id}
+                onClick={() => {
+                  seeChat(channel._id);
+                }}
+              >
                 <h1>{channel.channelName}</h1>
               </div>
             );
