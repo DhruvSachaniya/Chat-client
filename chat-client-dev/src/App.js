@@ -3,6 +3,7 @@ import Register from "./componets/Register";
 import Login from "./componets/Login";
 import Server from "./componets/Server";
 import Channel from "./componets/Channel";
+import Logout from "./componets/Logout";
 
 function RegisterOrLogin() {
   return (
@@ -13,10 +14,12 @@ function RegisterOrLogin() {
       <br />
       <Link to="/servers">server</Link>
       <br />
+      <Link to="/logout">Logout</Link>
+      <br />
       {/* <Link to="/channels">channels</Link> */}
     </>
   );
-};
+}
 
 function App() {
   return (
@@ -26,8 +29,9 @@ function App() {
           <Route path="/" element={<RegisterOrLogin />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/servers" element={<Server/>}/>
-          <Route path="/channels" element={<Channel/>}/>
+          <Route path="/servers" element={<Server />} />
+          <Route path="/channels" element={<Channel />} />
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </BrowserRouter>
     </>
