@@ -4,6 +4,7 @@ import Login from "./componets/Login";
 import Server from "./componets/Server";
 import Channel from "./componets/Channel";
 import Logout from "./componets/Logout";
+import Chat from "./componets/Chat";
 
 function RegisterOrLogin() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/servers" element={<Server />} />
           <Route path="/channels" element={<Channel />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </BrowserRouter>
     </>
