@@ -12,9 +12,17 @@ export default function CreateChannel() {
       headers: {
         Authorization: localStorage.getItem("jwt_token"),
       },
-    }).then((response) => {
-      setChannels(response.data);
-    });
+    })
+      .then((response) => {
+        setChannels(response.data);
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          console.log(
+            "No channel found for this server! please create one to chat."
+          );
+        }
+      });
   }
 
   useEffect(() => {
