@@ -10,7 +10,7 @@ export default function CreateChannel() {
 
   function fetchChannels() {
     axios({
-      url: `/channels/${localStorage.getItem("serverId")}`,
+      url: `/channels/servers/${localStorage.getItem("parentServerId")}`,
       method: "get",
       headers: {
         Authorization: localStorage.getItem("jwt_token"),
@@ -48,7 +48,7 @@ export default function CreateChannel() {
         },
         data: JSON.stringify({
           channelName: channelName,
-          parentServer: localStorage.getItem("serverId"),
+          parentServerId: localStorage.getItem("parentServerId"),
         }),
       });
       fetchChannels();

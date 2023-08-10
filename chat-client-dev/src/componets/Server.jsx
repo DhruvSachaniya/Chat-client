@@ -6,6 +6,7 @@ export default function Server() {
   const [serverName, setServerName] = useState("");
   const [servers, setServers] = useState([]);
   const navigate = useNavigate();
+
   function fetchServers() {
     axios({
       url: "/users/servers",
@@ -51,8 +52,8 @@ export default function Server() {
     }
   }
 
-  function seeChannels(serverId) {
-    localStorage.setItem("serverId", serverId);
+  function seeChannels(parentServerId) {
+    localStorage.setItem("parentServerId", parentServerId);
     navigate("/channels");
   }
 
