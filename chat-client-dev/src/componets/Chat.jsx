@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   async function fetchChat() {
     try {
@@ -24,26 +26,33 @@ export default function Chat() {
   }
 
   useEffect(() => {
+    if (socket === null) {
+      const socket = io("http://localhost:5000", {
+        autoConnect: false,
+      });
+
+      socket.connect();
+      setSocket(socket);
+
+    }
     fetchChat();
   }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    await axios("/messages", {
-      method: "post",
-      headers: {
-        Authorization: localStorage.getItem("jwt_token"),
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify({
-        message: message,
-        channelId: localStorage.getItem("channelId"),
-      }),
-    });
-    
+    const messageData = {
+      message: message,
+      channelId: localStorage.getItem("channelId"),
+      jwtToken: localStorage.getItem("jwt_token"),
+    };
+
+    socket.emit("send_message", messageData);
+
     setMessage("");
-    fetchChat();
+    socket.on("message_created", () => {
+      fetchChat();
+    });
   }
 
   function handleChange(event) {
