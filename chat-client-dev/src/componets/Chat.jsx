@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { io } from "socket.io-client";
 
 export default function Chat() {
@@ -7,52 +6,68 @@ export default function Chat() {
   const [chat, setChat] = useState([]);
   const [socket, setSocket] = useState(null);
 
-  async function fetchChat() {
-    try {
-      const response = await axios(
-        `/messages/${localStorage.getItem("channelId")}`,
-        {
-          method: "get",
-          headers: {
-            Authorization: localStorage.getItem("jwt_token"),
-          },
-        }
-      );
-      setChat(response.data.response);
-    } catch (err) {
-      console.log(err);
-      console.log("error occurred");
+  function fetchChat(socket) {
+    console.log("Fetching chat");
+    if (socket) {
+      const channelId = localStorage.getItem("channelId");
+      if (channelId !== undefined) {
+        console.log("Fetching messages");
+        socket.emit("fetch_messages", {
+          channelId: channelId,
+        });
+      } else {
+        console.log("Channel id not found!");
+      }
+    } else {
+      console.log("Socket not found");
     }
   }
 
   useEffect(() => {
     if (socket === null) {
-      const socket = io("http://localhost:5000", {
-        autoConnect: false,
+      const newSocket = io("http://localhost:5000", {
+        auth: {
+          token: localStorage.getItem("jwt_token"),
+        },
       });
+      console.log(`token sent ${newSocket.auth.token}`);
+      newSocket.on("connect", () => {
+        console.log("Connected");
+        setSocket(newSocket);
+        fetchChat(newSocket);
 
-      socket.connect();
-      setSocket(socket);
+        newSocket.on("messages_fetched", (data) => {
+          console.log(data.messages);
+          console.log("Message fetched, console logging from useEffect");
+          setChat(data.messages);
+        });
 
+        newSocket.on("message_created", () => {
+          console.log("message created, console.logging from useEffect");
+          fetchChat(newSocket);
+        });
+
+        return () => {
+          console.log("turnning off sockets");
+          newSocket.off("messages_fetched");
+          newSocket.off("message_created");
+          newSocket.disconnect();
+        };
+      });
     }
-    fetchChat();
   }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
-
+    console.log(socket);
     const messageData = {
       message: message,
       channelId: localStorage.getItem("channelId"),
-      jwtToken: localStorage.getItem("jwt_token"),
     };
 
     socket.emit("send_message", messageData);
 
     setMessage("");
-    socket.on("message_created", () => {
-      fetchChat();
-    });
   }
 
   function handleChange(event) {
