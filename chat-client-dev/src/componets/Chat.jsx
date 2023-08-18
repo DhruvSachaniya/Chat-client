@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import CryptoJS from "crypto-js";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -38,6 +39,20 @@ export default function Chat() {
 
         newSocket.on("messages_fetched", (data) => {
           console.log(data.messages);
+          for (let i = 0; i < data.messages.length; i++) {
+            const encryptedMessage = data.messages[i].message;
+
+            try {
+              const decryptedBytes = CryptoJS.AES.decrypt(
+                encryptedMessage,
+                "secret-key"
+              );
+              const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+              data.messages[i].message = decryptedText;
+            } catch (error) {
+              console.error("Decryption Error:", error);
+            }
+          }
           console.log("Message fetched, console logging from useEffect");
           setChat(data.messages);
         });
